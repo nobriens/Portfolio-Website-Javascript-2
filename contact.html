@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact</title>
+  <link rel="stylesheet" href="stylesheet.css">
+
+  <script src="lightmode.js" defer></script>
+  <script src="contactform.js" defer></script>
+  <script src="cursor.js" defer></script>
+</head>
+
+<body class="contact-page">
+  <div class="container">
+
+    <nav class="navbar">
+      <div class="logo">
+        <a href="index.html">
+          <img src="images/nlogoorange.png" alt="Neesan logo">
+        </a>
+      </div>
+
+      <ul class="nav-links">
+        <li><a href="index.html#home">Home</a></li>
+
+        <li class="dropdown">
+          <span class="dropbtn">Work</span>
+          <ul class="dropdown-content">
+            <li><a href="projects/project1.html">RideWise</a></li>
+            <li><a href="projects/project2.html">AIB Work</a></li>
+            <li><a href="projects/project3.html">Peer2Pal</a></li>
+          </ul>
+        </li>
+
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+
+        <li class="theme-toggle">
+          <label class="theme-switch" title="Toggle light / dark mode">
+            <input type="checkbox" id="theme-toggle">
+            <span class="switch-track">
+              <span class="switch-thumb">
+                <img src="images/icon-sun.png" alt="light mode" class="icon icon-sun">
+                <img src="images/icon-moon.png" alt="dark mode" class="icon icon-moon">
+              </span>
+            </span>
+          </label>
+        </li>
+      </ul>
+    </nav>
+
+    <section class="contact-form-section">
+      <h1>Lets Work Together</h1>
+      <p>
+        Have a project, collaboration, or just want to say hello?
+        Fill out the form below and Ill get back to you soon
+      </p>
+
+      <form
+        id="contact-form"
+        class="contact-form"
+        action="https://formspree.io/f/xvzzpvdr"
+        method="POST"
+      >
+        <div id="form-error" class="form-error" aria-live="polite"></div>
+        <p id="form-status" class="form-meta" aria-live="polite"></p>
+        <p class="form-meta">
+          Messages sent from this device: <span id="message-count">0</span>
+        </p>
+
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="6" placeholder="Your message" required></textarea>
+        </div>
+
+        <button type="submit" class="case-btn">Send Message</button>
+      </form>
+    </section>
+
+  </div>
+    <div class="cursors">
+      <div>
+        <span></span>
+      </div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
+  </body>
+</html>
+
+

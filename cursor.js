@@ -1,0 +1,42 @@
+const cursorTag = document.querySelector(".cursors");
+const balls = cursorTag.querySelectorAll("div");
+const ballMessage = cursorTag.querySelector("div span")
+const images = document.querySelectorAll("img[data-hover]")
+
+let aimX = 0;
+let aimY = 0;
+
+balls.forEach((ball, index) => {
+  let currentX = 0;
+  let currentY = 0;
+
+  const speed = 0.3 - index * 0.015;
+
+  function animate() {
+    currentX += (aimX - currentX) * speed;
+    currentY += (aimY - currentY) * speed;
+
+    ball.style.left = currentX + "px";
+    ball.style.top = currentY + "px";
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
+})
+
+document.addEventListener("mousemove", (event) => {
+  aimX = event.clientX;
+  aimY = event.clientY;
+})
+
+images.forEach(image => {
+    image.addEventListener("mouseover", function () {
+      ballMessage.classList.add("visible")
+      ballMessage.innerHTML = image.getAttribute("data-hover")
+    })
+
+    image.addEventListener("mouseout", function (){
+      ballMessage.classList.remove("visible")
+    })
+})
