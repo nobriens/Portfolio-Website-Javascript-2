@@ -332,9 +332,6 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// ===============================
-// >>> NEW — CLEAN UPDATE FLOW <<<
-// ===============================
 function capturePreviousHeroState() {
   return {
     x: hero.x,
@@ -366,10 +363,7 @@ function update() {
   updateScoreDisplay();
 }
 
-
-// ===============================
 // Player movement
-// ===============================
 function handlePlayerInput() {
 
   if (playState.keys["ArrowLeft"] || playState.keys["KeyA"]) {
@@ -410,10 +404,7 @@ function constrainToWorld() {
   }
 }
 
-
-// ===============================
 // Platforms & pipes
-// ===============================
 function handlePlatformCollisions(prev) {
 
   hero.onBlock = false;
@@ -452,10 +443,7 @@ function handlePipeCollisions(prev) {
   }
 }
 
-
-// ===============================
 // Enemies
-// ===============================
 function updateEnemies(prev) {
 
   for (let enemy of gameObjects.enemies) {
@@ -482,7 +470,7 @@ for (let platform of gameObjects.platforms) {
   }
 }
 
-// If stepping off — turn around
+// If enemy begins to step off platform they turn around
 if (!enemyOnPlatform) {
   enemy.direction *= -1;
 }
@@ -515,10 +503,7 @@ function handleEnemyCollision(enemy, prev) {
   }
 }
 
-
-// ===============================
 // Coins
-// ===============================
 function collectCoins() {
 
   for (let coin of gameObjects.coins) {
@@ -531,10 +516,7 @@ function collectCoins() {
   }
 }
 
-
-// ===============================
 // Surprise blocks
-// ===============================
 function handleSurpriseBlocks(prev) {
 
   for (let block of gameObjects.surpriseBlocks) {
@@ -562,10 +544,7 @@ function handleSurpriseBlocks(prev) {
   }
 }
 
-
-// ===============================
-// Win & death conditions
-// ===============================
+// Win and death conditions
 function checkPipeWin() {
 
   for (let pipe of gameObjects.pipes) {
@@ -588,10 +567,7 @@ function checkFallingDeath() {
   }
 }
 
-
-// ===============================
 // Rendering
-// ===============================
 function renderHero() {
   updateElementPos(hero.element, hero.x, hero.y);
 }
@@ -600,10 +576,7 @@ function updateScoreDisplay() {
   document.getElementById("score").textContent = playState.score;
 }
 
-
-// ===============================
 // Collision
-// ===============================
 function isTouching(a, b) {
   return (
     a.x < b.x + b.width &&
@@ -613,10 +586,7 @@ function isTouching(a, b) {
   );
 }
 
-
-// ===============================
-// Restart / Death
-// ===============================
+// Restart/Death
 function handlePlayerDeath() {
   playState.lives--;
   if (playState.lives <= 0) {
@@ -643,10 +613,7 @@ function restartStage() {
 
 document.getElementById("restart-button").addEventListener("click", restartStage);
 
-
-// ===============================
-// Highlight social links
-// ===============================
+// Social links
 function highlightContactLink(contactId) {
   if (!contactId) return;
   const el = document.querySelector(`.contact-link[data-id="${contactId}"]`);
@@ -659,7 +626,7 @@ function highlightContactLink(contactId) {
 }
 
 
-// Loads level data from an external JSON file. This keeps the game content separate from the game logic.//
+// Loads level data from an external JSON file. This keeps the game content separate from the game logic
 window.addEventListener("DOMContentLoaded", () => {
   fetch("levels.json")
     .then((res) => {
@@ -671,4 +638,5 @@ window.addEventListener("DOMContentLoaded", () => {
       bootGame();
     })
     .catch((err) => console.error("Error loading levels.json:", err));
+
 });
