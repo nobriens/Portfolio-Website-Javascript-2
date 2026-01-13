@@ -1,5 +1,5 @@
 // So this is the fix for the dupicated JS files from my initial portfolio 
-const HOVER_DELAY_MS = 200; // These are just settings so I don’t have to repeat numbers everywhere
+const HOVER_DELAY_MS = 200; // These are just settings
 const FADE_DURATION_MS = 500;
 const SLIDE_INTERVAL_MS = 3000;
 
@@ -84,3 +84,4 @@ function setupHoverFadeSlideshow({ id, images }) { // This function sets up the 
   });
 
 }
+
