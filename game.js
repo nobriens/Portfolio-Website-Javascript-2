@@ -332,6 +332,7 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
+// Stores the hero’s position from the previous frame. I use this mainly for collision logic, so I can tell whether the player landed on something or hit it from below.
 function capturePreviousHeroState() {
   return {
     x: hero.x,
@@ -341,29 +342,39 @@ function capturePreviousHeroState() {
   };
 }
 
+// This is the main update function that runs every frame, it controls the overall game flow by calling smaller, more specific functions in a clear order.
 function update() {
 
+  // Save the hero’s position before movement happens
   const prev = capturePreviousHeroState();
 
+  // Player movement and physics
   handlePlayerInput();
   applyPhysics();
   constrainToWorld();
 
+  // Collision handling
   handlePlatformCollisions(prev);
   handlePipeCollisions(prev);
 
+  // Game interactions
   updateEnemies(prev);
   collectCoins();
   handleSurpriseBlocks(prev);
 
+  // Win and lose conditions
   checkPipeWin();
   checkFallingDeath();
 
+  // Update visuals and UI
   renderHero();
   updateScoreDisplay();
 }
 
 // Player movement
+
+// Reads keyboard input and updates horizontal movement and jumping.
+// I included both arrow keys and WASD for accessibility.
 function handlePlayerInput() {
 
   if (playState.keys["ArrowLeft"] || playState.keys["KeyA"]) {
@@ -373,15 +384,18 @@ function handlePlayerInput() {
     hero.velX = MOVE_SPEED;
   }
   else {
+    // Gradually slows the player when no key is pressed
     hero.velX *= 0.8;
   }
 
+  // Jumping is only allowed when standing on a surface
   if (playState.keys["Space"] && hero.onBlock) {
     hero.velY = JUMP_POWER;
     hero.onBlock = false;
   }
 }
 
+// Applies gravity and updates the hero’s position each frame.
 function applyPhysics() {
   if (!hero.onBlock) {
     hero.velY += PHYSICS_GRAVITY;
@@ -391,6 +405,7 @@ function applyPhysics() {
   hero.y += hero.velY;
 }
 
+// Keeps the player inside the game area and prevents them from leaving the screen.
 function constrainToWorld() {
 
   if (hero.x <= 0) {
@@ -405,6 +420,8 @@ function constrainToWorld() {
 }
 
 // Platforms & pipes
+
+// Handles landing on platforms. The previous frame data ensures the player can only land from above.
 function handlePlatformCollisions(prev) {
 
   hero.onBlock = false;
@@ -425,6 +442,7 @@ function handlePlatformCollisions(prev) {
   }
 }
 
+// Pipes use the same collision logic as platforms but also act as the level exit.
 function handlePipeCollisions(prev) {
 
   for (let pipe of gameObjects.pipes) {
@@ -444,6 +462,8 @@ function handlePipeCollisions(prev) {
 }
 
 // Enemies
+
+// Updates enemy movement and makes sure they turn around when reaching the edge of a platform.
 function updateEnemies(prev) {
 
   for (let enemy of gameObjects.enemies) {
@@ -452,29 +472,30 @@ function updateEnemies(prev) {
 
     enemy.x += enemy.speed * enemy.direction;
 
-let enemyOnPlatform = false;
+    let enemyOnPlatform = false;
 
-for (let platform of gameObjects.platforms) {
+    for (let platform of gameObjects.platforms) {
 
-  const feetAreOnTop =
-    enemy.y + enemy.height >= platform.y - 2 &&
-    enemy.y + enemy.height <= platform.y + 2;
+      const feetAreOnTop =
+        enemy.y + enemy.height >= platform.y - 2 &&
+        enemy.y + enemy.height <= platform.y + 2;
 
-  const fullyOnPlatform =
-    enemy.x >= platform.x &&
-    enemy.x + enemy.width <= platform.x + platform.width;
+      const fullyOnPlatform =
+        enemy.x >= platform.x &&
+        enemy.x + enemy.width <= platform.x + platform.width;
 
-  if (feetAreOnTop && fullyOnPlatform) {
-    enemyOnPlatform = true;
-    break;
-  }
-}
+      if (feetAreOnTop && fullyOnPlatform) {
+        enemyOnPlatform = true;
+        break;
+      }
+    }
 
-// If enemy begins to step off platform they turn around
-if (!enemyOnPlatform) {
-  enemy.direction *= -1;
-}
+    // Turn enemy around if they start walking off the platform
+    if (!enemyOnPlatform) {
+      enemy.direction *= -1;
+    }
 
+    // Extra safety check for screen edges
     if (enemy.x <= 0) enemy.direction = 1;
     if (enemy.x + enemy.width >= GAME_WIDTH) enemy.direction = -1;
 
@@ -484,6 +505,7 @@ if (!enemyOnPlatform) {
   }
 }
 
+// Determines whether the player stomps an enemy or takes damage.
 function handleEnemyCollision(enemy, prev) {
 
   if (!isTouching(hero, enemy)) return;
@@ -503,11 +525,12 @@ function handleEnemyCollision(enemy, prev) {
   }
 }
 
-// Coins
+// Coins & surprise blocks
+
+// Removes coins when collected and updates the score.
 function collectCoins() {
 
   for (let coin of gameObjects.coins) {
-
     if (!coin.collected && isTouching(hero, coin)) {
       coin.collected = true;
       coin.element.remove();
@@ -516,7 +539,7 @@ function collectCoins() {
   }
 }
 
-// Surprise blocks
+// Surprise blocks can only be activated when hit from below. Each block links to one of my social platforms.
 function handleSurpriseBlocks(prev) {
 
   for (let block of gameObjects.surpriseBlocks) {
@@ -544,11 +567,12 @@ function handleSurpriseBlocks(prev) {
   }
 }
 
-// Win and death conditions
+// Win / lose logic
+
+// Allows the player to win by entering the pipe.
 function checkPipeWin() {
 
   for (let pipe of gameObjects.pipes) {
-
     const standingOnPipe =
       hero.onBlock &&
       hero.x + hero.width > pipe.x &&
@@ -561,22 +585,28 @@ function checkPipeWin() {
   }
 }
 
+// Falling below the level counts as death.
 function checkFallingDeath() {
   if (hero.y > GAME_FLOOR_Y) {
     handlePlayerDeath();
   }
 }
 
-// Rendering
+// Rendering & UI
+
+// Updates the hero’s position in the DOM
 function renderHero() {
   updateElementPos(hero.element, hero.x, hero.y);
 }
 
+// Keeps the score display in sync with the game state.
 function updateScoreDisplay() {
   document.getElementById("score").textContent = playState.score;
 }
 
-// Collision
+// Collision helper
+
+// Basic rectangle collision detection.
 function isTouching(a, b) {
   return (
     a.x < b.x + b.width &&
@@ -586,7 +616,9 @@ function isTouching(a, b) {
   );
 }
 
-// Restart/Death
+// Restart / death handling
+
+// Reduces lives and triggers game over if needed.
 function handlePlayerDeath() {
   playState.lives--;
   if (playState.lives <= 0) {
@@ -594,6 +626,7 @@ function handlePlayerDeath() {
   }
 }
 
+// Fully resets the game state and restarts the level.
 function restartStage() {
   playState.score = 0;
   playState.level = 1;
@@ -611,11 +644,15 @@ function restartStage() {
   gameLoop();
 }
 
-document.getElementById("restart-button").addEventListener("click", restartStage);
+document.getElementById("restart-button")
+  .addEventListener("click", restartStage);
 
-// Social links
+// Social link feedback
+
+// Highlights the relevant contact icon when a surprise block is hit.
 function highlightContactLink(contactId) {
   if (!contactId) return;
+
   const el = document.querySelector(`.contact-link[data-id="${contactId}"]`);
   if (!el) return;
 
@@ -625,18 +662,16 @@ function highlightContactLink(contactId) {
   }, 1000);
 }
 
+// Level loading
 
-// Loads level data from an external JSON file. This keeps the game content separate from the game logic
+// Loads level data from an external JSON file, this keeps level content separate from the game logic.
 window.addEventListener("DOMContentLoaded", () => {
   fetch("levels.json")
-    .then((res) => {
-      if (!res.ok) throw new Error("HTTP error " + res.status);
-      return res.json();
-    })
-    .then((data) => {
+    .then(res => res.json())
+    .then(data => {
       levels = data.levels;
       bootGame();
     })
-    .catch((err) => console.error("Error loading levels.json:", err));
-
+    .catch(err => console.error(err));
 });
+
