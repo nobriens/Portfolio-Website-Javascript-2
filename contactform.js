@@ -44,7 +44,8 @@ form.addEventListener("submit", async (e) => { // This listens for when the user
     const response = await fetch(form.action, { // sends the form data to Formspree using fetch
       method: "POST",
       body: new FormData(form),
-      headers: { Accept: "application/json" },
+      headers: { Accept: "application/json" }, // this requests a JSON response from formspree when submitting via JavaScript
+      
     });
 
     if (!response.ok) throw new Error("Form submission failed");
@@ -61,4 +62,5 @@ form.addEventListener("submit", async (e) => { // This listens for when the user
       "Something went wrong. Please try again";
   }
 });
+
 
